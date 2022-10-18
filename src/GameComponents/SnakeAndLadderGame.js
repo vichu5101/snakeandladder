@@ -3,91 +3,67 @@ import Props from './props'
 import './gameStyle.css'
 import gameData from './Data'
 import Image from './snakeandladder.png'
+import csvDataFile from './csvFile'
 
 let count = 0
 let winner = 1
+let player1Moves = 1
+let player2Moves = 1
+let counter = [{ Player: 'Player 1', PlayerMoves: 1, PlayerPosition: 1, Dice: 0 },
+{ Player: 'Player 2', PlayerMoves: 1, PlayerPosition: 1, Dice: 0 }]
 const SnakeAndLadderGame = () => {
     const [player1Position, setPlayer1Position] = useState(1)
     const [player2Position, setPlayer2Position] = useState(1)
     const [player, setPlayer] = useState('winner')
     const [pointsTable, setpointsTable] = useState('dumContainer')
     const [playerTurn, setplayerTurn] = useState('Player 1 Turn')
-    const [bonusDice,setBonusDice]=useState('Player 1')
-    const [bonusClass,setBonusClass]=useState('bonusDice')
+    const [bonusDice, setBonusDice] = useState('Player 1')
+    const [bonusClass, setBonusClass] = useState('bonusDice')
     const [random, setRandom] = useState(0)
-    const [gameStart,setGameStart]=useState('startButton')
-    function player1() {
-        let randomNumberGenerator = Math.floor(Math.random() * 6) + 1
-        if ((player1Position + randomNumberGenerator) <= 100) {
-            gameData.forEach(element => {
-                element.players.Player1 = ''
-                if (element.id === player1Position + randomNumberGenerator) {
-                    if (element.to !== '') {
-                        gameData.forEach(elementValue => {
-                            if (element.to === elementValue.id) {
-                                let indexOfEle = gameData.indexOf(elementValue)
-                                gameData[indexOfEle].players.Player1 = 'in'
-                            }
-                        });
-                        setPlayer1Position(element.to)
-                    } else {
-                        element.players.Player1 = 'in'
-                        setPlayer1Position(player1Position + randomNumberGenerator)
-                    }
-                }
-            });
-            if ((player1Position + randomNumberGenerator) === 100) {
-                setPlayer('winnerAnnounce')
-                setpointsTable('dumContainer')
-            }
-        }
-        else {
-            setPlayer1Position(player1Position)
-        }
-        let diceValue = document.getElementById('dice')
-        diceValue.innerText = randomNumberGenerator
-        setRandom(randomNumberGenerator)
-        return randomNumberGenerator
-    }
-    function player2() {
-        let randomNumberGenerator = Math.floor(Math.random() * 6) + 1
-        if ((player2Position + randomNumberGenerator) <= 100) {
-            gameData.forEach(element => {
-                element.players.Player2 = ''
-                if (element.id === player2Position + randomNumberGenerator) {
-                    if (element.to !== '') {
-                        gameData.forEach(elementValue => {
-                            if (element.to === elementValue.id) {
-                                let indexOfEle = gameData.indexOf(elementValue)
-                                gameData[indexOfEle].players.Player2 = 'in'
-                            }
-                        });            
-                        setPlayer2Position(element.to)
-                    } else {
-                        element.players.Player2 = 'in'
-                        setPlayer2Position(player2Position + randomNumberGenerator)
-                    }
-                }
-            });
+    const [gameStart, setGameStart] = useState('startButton')
 
-            if ((player2Position + randomNumberGenerator) === 100) {
-                winner++
-                setPlayer('winnerAnnounce')
-                setpointsTable('dumContainer')
-            }
-        }
-        else {
-            setPlayer2Position(player2Position)
-        }
-        let diceValue = document.getElementById('dice')
-        diceValue.innerText = randomNumberGenerator
-        setRandom(randomNumberGenerator)
-        return randomNumberGenerator
-    }
     function dice() {
         if (count % 2 === 0) {
-            let value = player1()
-            if (value === 1 || value === 5 || value === 6) {
+            player1Moves++
+            let randomNumberGenerator = Math.floor(Math.random() * 6) + 1
+            let playerPosition = player1Position + randomNumberGenerator
+            counter.push({ Player: 'Player 1', PlayerMoves: player1Moves, PlayerPosition: playerPosition, Dice: randomNumberGenerator })
+            if ((player1Position + randomNumberGenerator) <= 100) {
+                gameData.forEach(element => {
+                    element.players.Player1 = ''
+                });
+                gameData.forEach(element => {
+                    if (element.id === player1Position + randomNumberGenerator) {
+                        if (element.to !== '') {
+                            gameData.forEach(elementValue => {
+                                if (element.to === elementValue.id) {
+                                    let indexOfEle = gameData.indexOf(elementValue)
+                                    gameData[indexOfEle].players.Player1 = 'in'
+                                }
+                            });
+                            setPlayer1Position(element.to)
+                        } else {
+                            element.players.Player1 = 'in'
+                            setPlayer1Position(player1Position + randomNumberGenerator)
+                        }
+                    }
+                });
+                if ((player1Position + randomNumberGenerator) === 100) {
+                    setPlayer('winnerAnnounce')
+                    setpointsTable('dumContainer')
+                    console.log(counter)
+                    console.log(`Player 1 Got ${player1Moves} Moves`)
+                    console.log(`Player 2 Got ${player2Moves} Moves`)
+                    csvDataFile(counter)
+                }
+            }
+            else {
+                setPlayer1Position(player1Position)
+            }
+            let diceValue = document.getElementById('dice')
+            diceValue.innerText = randomNumberGenerator
+            setRandom(randomNumberGenerator)
+            if (randomNumberGenerator === 1 || randomNumberGenerator === 5 || randomNumberGenerator === 6) {
                 setplayerTurn('Player 1 Turn')
                 setBonusDice('Player 1')
                 setBonusClass('setBonusDice')
@@ -100,8 +76,48 @@ const SnakeAndLadderGame = () => {
             }
         }
         else {
-            let value = player2()
-            if (value === 1 || value === 5 || value === 6) {
+            player2Moves++
+            let randomNumberGenerator = Math.floor(Math.random() * 6) + 1
+            let playerPosition = player2Position + randomNumberGenerator
+            counter.push({ Player: 'Player 2', PlayerMoves: player2Moves, PlayerPosition: playerPosition, Dice: randomNumberGenerator })
+            if ((player2Position + randomNumberGenerator) <= 100) {
+                gameData.forEach(element => {
+                    element.players.Player2 = ''
+                });
+                gameData.forEach(element => {
+                    if (element.id === player2Position + randomNumberGenerator) {
+                        if (element.to !== '') {
+                            gameData.forEach(elementValue => {
+                                if (element.to === elementValue.id) {
+                                    let indexOfEle = gameData.indexOf(elementValue)
+                                    gameData[indexOfEle].players.Player2 = 'in'
+                                }
+                            });
+                            setPlayer2Position(element.to)
+                        } else {
+                            element.players.Player2 = 'in'
+                            setPlayer2Position(player2Position + randomNumberGenerator)
+                        }
+                    }
+                });
+
+                if ((player2Position + randomNumberGenerator) === 100) {
+                    winner++
+                    setPlayer('winnerAnnounce')
+                    setpointsTable('dumContainer')
+                    console.log(counter)
+                    console.log(`Player 1 Got ${player1Moves} Moves`)
+                    console.log(`Player 2 Got ${player2Moves} Moves`)
+                    csvDataFile(counter)
+                }
+            }
+            else {
+                setPlayer2Position(player2Position)
+            }
+            let diceValue = document.getElementById('dice')
+            diceValue.innerText = randomNumberGenerator
+            setRandom(randomNumberGenerator)
+            if (randomNumberGenerator === 1 || randomNumberGenerator === 5 || randomNumberGenerator === 6) {
                 setplayerTurn('Player 2 Turn')
                 setBonusDice('Player 2')
                 setBonusClass('setBonusDice')
@@ -116,7 +132,7 @@ const SnakeAndLadderGame = () => {
     }
 
 
-    function startGame(v) {
+    function startGame() {
         setGameStart('startButtonNone')
         setpointsTable('container')
     }
@@ -131,7 +147,7 @@ const SnakeAndLadderGame = () => {
                     <img src={Image} alt='thisisimge' />
                     <h1>Snake 🐍 Ladder Game</h1>
 
-                    <button  onClick={startGame} className={gameStart} id='startBtn'>Start</button>
+                    <button onClick={startGame} className={gameStart} id='startBtn'>Start</button>
 
                     <div className={player} id='toWinner'><h1>Player {winner}</h1><p>Won the Game</p><p> 🏆 </p></div>
                     <div className={pointsTable} id='dummy'>
