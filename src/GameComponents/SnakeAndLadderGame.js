@@ -9,6 +9,7 @@ let count = 0
 let winner = 1
 let player1Moves = 1
 let player2Moves = 1
+let randomNumber=0
 let counter = [{ Player: 'Player 1', PlayerMoves: 1, PlayerPosition: 1, Dice: 0 },
 { Player: 'Player 2', PlayerMoves: 1, PlayerPosition: 1, Dice: 0 }]
 const SnakeAndLadderGame = () => {
@@ -31,7 +32,7 @@ const SnakeAndLadderGame = () => {
             if ((player1Position + randomNumberGenerator) <= 100) {
                 gameData.forEach(element => {
                     element.players.Player1 = ''
-                });
+                });     
                 gameData.forEach(element => {
                     if (element.id === player1Position + randomNumberGenerator) {
                         if (element.to !== '') {
@@ -60,8 +61,7 @@ const SnakeAndLadderGame = () => {
             else {
                 setPlayer1Position(player1Position)
             }
-            let diceValue = document.getElementById('dice')
-            diceValue.innerText = randomNumberGenerator
+            randomNumber=randomNumberGenerator
             setRandom(randomNumberGenerator)
             if (randomNumberGenerator === 1 || randomNumberGenerator === 5 || randomNumberGenerator === 6) {
                 setplayerTurn('Player 1 Turn')
@@ -74,6 +74,7 @@ const SnakeAndLadderGame = () => {
                 setBonusDice('Player 2')
                 setBonusClass('bonusDice')
             }
+            return randomNumberGenerator
         }
         else {
             player2Moves++
@@ -114,8 +115,7 @@ const SnakeAndLadderGame = () => {
             else {
                 setPlayer2Position(player2Position)
             }
-            let diceValue = document.getElementById('dice')
-            diceValue.innerText = randomNumberGenerator
+             randomNumber=randomNumberGenerator
             setRandom(randomNumberGenerator)
             if (randomNumberGenerator === 1 || randomNumberGenerator === 5 || randomNumberGenerator === 6) {
                 setplayerTurn('Player 2 Turn')
@@ -128,6 +128,7 @@ const SnakeAndLadderGame = () => {
                 setBonusDice('Player 1')
                 setBonusClass('bonusDice')
             }
+            return randomNumberGenerator
         }
     }
 
@@ -146,14 +147,14 @@ const SnakeAndLadderGame = () => {
                 <header>
                     <img src={Image} alt='thisisimge' />
                     <h1>Snake 🐍 Ladder Game</h1>
-
+   
                     <button onClick={startGame} className={gameStart} id='startBtn'>Start</button>
 
                     <div className={player} id='toWinner'><h1>Player {winner}</h1><p>Won the Game</p><p> 🏆 </p></div>
                     <div className={pointsTable} id='dummy'>
                         <div className="diceRotate">
                             <button onClick={dice}>Dice 🎲</button>
-                            <div id="dice">{random}</div>
+                            <div id="dice">{randomNumber}</div>
                         </div>
                         <div className={bonusClass}>{bonusDice} got bonus dice</div>
                         <div id="playerTurn">{playerTurn}</div>
